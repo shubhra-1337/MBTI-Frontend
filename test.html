@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>✨ MBTI Personality Test</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px 20px;
+    }
+    .container {
+      width: 100%;
+      max-width: 750px;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(25px);
+      border-radius: 30px;
+      padding: 40px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      color: #fff;
+      animation: fadeIn 1s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    h2 {
+      text-align: center;
+      font-size: 2.4rem;
+      margin-bottom: 30px;
+      color: #ffffff;
+    }
+    .question { margin-bottom: 25px; }
+    .question p { font-weight: 600; font-size: 1.1rem; margin-bottom: 10px; }
+    label {
+      display: block;
+      padding: 10px 16px;
+      background-color: rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    label:hover {
+      background-color: rgba(255, 255, 255, 0.35);
+    }
+    input[type="radio"] {
+      margin-right: 10px;
+    }
+    button {
+      background-color: #ffffff;
+      color: #7c4dff;
+      padding: 14px 28px;
+      border: none;
+      border-radius: 50px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      display: block;
+      margin: 30px auto 10px;
+      transition: all 0.3s ease;
+      box-shadow: 0 5px 15px rgba(124, 77, 255, 0.3);
+    }
+    button:hover {
+      background-color: #e8e0ff;
+      transform: scale(1.05);
+    }
+    @media (max-width: 600px) {
+      .container { padding: 30px 20px; }
+      h2 { font-size: 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>✨ Discover Your MBTI Type</h2>
+    <form id="mbtiForm"></form>
+    <button onclick="getResult()">Reveal My Type</button>
+  </div>
+
+  <script>
+    const questions = [
+      "Describe how you feel after spending hours at a loud, crowded event.",
+      "What kind of conversations energize you the most — one-on-one or group-based?",
+      "When something exciting happens, who’s the first to know, and how fast do you share it?",
+      "Do you ever feel drained after too much alone time — or is that your sweet spot?",
+      "How do you behave in a room full of strangers when no one’s talking yet?",
+      "When learning something new, what helps more — hands-on practice or conceptual frameworks?",
+      "Do you notice small details in your surroundings, or are you more drawn to patterns and meanings?",
+      "When someone tells a story, what stands out more to you: the facts or the emotions behind it?",
+      "How do you prefer to plan a trip — itinerary and bookings or ideas and vibes?",
+      "Do you trust what’s proven and familiar, or do you often explore imaginative what-ifs?",
+      "When someone disagrees with you, do you defend your point with facts or seek to understand their feelings?",
+      "Do you believe being fair means treating everyone the same or considering each person’s unique situation?",
+      "If a friend breaks a rule for a good reason, do you side with the rules or their intentions?",
+      "When solving a problem, do you focus on the most efficient solution or the one that affects people least?",
+      "In your mind, is 'being right' the same as 'doing right'?",
+      "How do you typically approach a big task — do you plan step by step or take it as it comes?",
+      "What’s your relationship with deadlines — early bird or last-minute pressure cooker?",
+      "How do you feel when someone cancels plans last minute — relieved, annoyed, or indifferent?",
+      "Do you write to-do lists for daily life or rely on spontaneity?",
+      "When you travel, do you enjoy sticking to a plan or discovering things along the way?"
+    ];
+
+    const choices = [
+      "Strongly Disagree",
+      "Disagree",
+      "Slightly Disagree",
+      "Neutral",
+      "Slightly Agree",
+      "Agree",
+      "Strongly Agree"
+    ];
+
+    const traits = [
+      ["E", "I"], ["E", "I"], ["E", "I"], ["E", "I"], ["E", "I"],
+      ["S", "N"], ["S", "N"], ["S", "N"], ["S", "N"], ["S", "N"],
+      ["T", "F"], ["T", "F"], ["T", "F"], ["T", "F"], ["T", "F"],
+      ["J", "P"], ["J", "P"], ["J", "P"], ["J", "P"], ["J", "P"]
+    ];
+
+    const form = document.getElementById("mbtiForm");
+
+    questions.forEach((q, index) => {
+      const div = document.createElement("div");
+      div.className = "question";
+      const p = document.createElement("p");
+      p.textContent = `${index + 1}. ${q}`;
+      div.appendChild(p);
+      choices.forEach((choice, i) => {
+        const label = document.createElement("label");
+        const input = document.createElement("input");
+        input.type = "radio";
+        input.name = `q${index + 1}`;
+        input.value = i < 3 ? traits[index][1] : i > 3 ? traits[index][0] : "";
+        label.appendChild(input);
+        label.appendChild(document.createTextNode(choice));
+        div.appendChild(label);
+      });
+      form.appendChild(div);
+    });
+
+    function getResult() {
+      const form = document.forms['mbtiForm'];
+      const counts = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
+
+      for (let i = 1; i <= 20; i++) {
+        const answer = form[`q${i}`].value;
+        if (answer) {
+          counts[answer]++;
+        } else {
+          alert("Please answer all 20 questions to get your type!");
+          return;
+        }
+      }
+
+      const result =
+        (counts.E > counts.I ? "E" : "I") +
+        (counts.S > counts.N ? "S" : "N") +
+        (counts.T > counts.F ? "T" : "F") +
+        (counts.J > counts.P ? "J" : "P");
+
+      localStorage.setItem("mbtiResult", result);
+      window.location.href = "dashboard.html";
+    }
+  </script>
+</body>
+</html>
