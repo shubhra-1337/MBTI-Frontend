@@ -139,7 +139,9 @@
         const input = document.createElement("input");
         input.type = "radio";
         input.name = `q${index + 1}`;
-        input.value = i < 3 ? traits[index][1] : i > 3 ? traits[index][0] : "";
+        if (i < 3) input.value = traits[index][1]; // Disagree group → second trait
+        else if (i > 3) input.value = traits[index][0]; // Agree group → first trait
+        else input.value = ""; // Neutral = no effect
         label.appendChild(input);
         label.appendChild(document.createTextNode(choice));
         div.appendChild(label);
@@ -152,20 +154,31 @@
       const counts = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
 
       for (let i = 1; i <= 20; i++) {
-        const answer = form[`q${i}`].value;
-        if (answer) {
-          counts[answer]++;
-        } else {
+        const radios = form[`q${i}`];
+        let selected = null;
+
+        for (let radio of radios) {
+          if (radio.checked) {
+            selected = radio.value;
+            break;
+          }
+        }
+
+        if (selected === null) {
           alert("Please answer all 20 questions to get your type!");
           return;
+        }
+
+        if (selected) {
+          counts[selected]++;
         }
       }
 
       const result =
-        (counts.E > counts.I ? "E" : "I") +
-        (counts.S > counts.N ? "S" : "N") +
-        (counts.T > counts.F ? "T" : "F") +
-        (counts.J > counts.P ? "J" : "P");
+        (counts.E >= counts.I ? "E" : "I") +
+        (counts.S >= counts.N ? "S" : "N") +
+        (counts.T >= counts.F ? "T" : "F") +
+        (counts.J >= counts.P ? "J" : "P");
 
       localStorage.setItem("mbtiResult", result);
       window.location.href = "dashboard.html";
