@@ -11,6 +11,7 @@
       color: #fff;
       padding: 20px;
       line-height: 1.6;
+      margin: 0;
     }
     .container {
       max-width: 800px;
@@ -26,10 +27,15 @@
       margin-bottom: 30px;
     }
     .category {
-      margin-top: 30px;
+      margin: 20px 0;
     }
-    .category h2 {
-      margin-bottom: 10px;
+    .category h2 a {
+      text-decoration: none;
+      color: #ffeb3b;
+      transition: color 0.3s;
+    }
+    .category h2 a:hover {
+      color: #fff176;
     }
     .back-button, .logout-button {
       display: inline-block;
@@ -145,16 +151,13 @@
     if (typeData) {
       container.innerHTML = `
         <div class="category">
-          <h2>🎶 Music Recommendations:</h2>
-          <ul>${typeData.songs.map(song => `<li>${song}</li>`).join('')}</ul>
+          <h2><a href="details.html?type=${result}&category=songs">🎶 Music Recommendations</a></h2>
         </div>
         <div class="category">
-          <h2>📚 Book Recommendations:</h2>
-          <ul>${typeData.books.map(book => `<li>${book}</li>`).join('')}</ul>
+          <h2><a href="details.html?type=${result}&category=books">📚 Book Recommendations</a></h2>
         </div>
         <div class="category">
-          <h2>💼 Career Recommendations:</h2>
-          <ul>${typeData.careers.map(career => `<li>${career}</li>`).join('')}</ul>
+          <h2><a href="details.html?type=${result}&category=careers">💼 Career Recommendations</a></h2>
         </div>
       `;
     } else {
@@ -172,3 +175,4 @@
   </script>
 </body>
 </html>
+
