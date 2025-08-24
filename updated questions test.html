@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>✨ MBTI Personality Test</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px 20px;
+    }
+    .container {
+      width: 100%;
+      max-width: 750px;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(25px);
+      border-radius: 30px;
+      padding: 40px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      color: #fff;
+      animation: fadeIn 1s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    h2 { text-align: center; font-size: 2.4rem; margin-bottom: 30px; color: #fff; }
+    .question { margin-bottom: 25px; }
+    .question p { font-weight: 600; font-size: 1.1rem; margin-bottom: 10px; }
+    label {
+      display: block;
+      padding: 10px 16px;
+      background-color: rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    label:hover { background-color: rgba(255, 255, 255, 0.35); }
+    input[type="radio"] { margin-right: 10px; }
+    button {
+      background-color: #fff;
+      color: #7c4dff;
+      padding: 14px 28px;
+      border: none;
+      border-radius: 50px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      display: block;
+      margin: 30px auto 10px;
+      transition: all 0.3s ease;
+      box-shadow: 0 5px 15px rgba(124, 77, 255, 0.3);
+    }
+    button:hover { background-color: #e8e0ff; transform: scale(1.05); }
+    @media (max-width: 600px) {
+      .container { padding: 30px 20px; }
+      h2 { font-size: 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>✨ Discover Your MBTI Type</h2>
+  <form id="mbtiForm"></form>
+  <button type="button" onclick="getResult()">Reveal My Type</button>
+</div>
+
+<script>
+const scoring = {
+  "Strongly Disagree": -3,
+  "Disagree": -2,
+  "Slightly Disagree": -1,
+  "Neutral": 0,
+  "Slightly Agree": 1,
+  "Agree": 2,
+  "Strongly Agree": 3
+};
+
+// 5 questions per MBTI dimension with some reversed
+const questions = [
+  // E/I
+  { text: "I feel energized after spending time with a group of people.", dimension: "EI", reverse: false },
+  { text: "I prefer thinking things through alone before sharing my ideas.", dimension: "EI", reverse: false },
+  { text: "I enjoy starting conversations with strangers.", dimension: "EI", reverse: false },
+  { text: "I feel drained after social gatherings, even if fun.", dimension: "EI", reverse: true },
+  { text: "I often speak my thoughts out loud to process them.", dimension: "EI", reverse: false },
+
+  // S/N
+  { text: "I focus on facts and details rather than possibilities.", dimension: "SN", reverse: false },
+  { text: "I enjoy imagining future possibilities more than analyzing the present.", dimension: "SN", reverse: false }  ,
+  { text: "I notice small changes and details in my environment easily.", dimension: "SN", reverse: false },
+  { text: "I often look for patterns or meanings rather than just obvious facts.", dimension: "SN", reverse: false },
+  { text: "I trust practical experience over abstract theories.", dimension: "SN", reverse: false },
+
+  // T/F
+  { text: "I make decisions based on logic rather than personal feelings.", dimension: "TF", reverse: false },
+  { text: "I consider other's emotions when making decisions.", dimension: "TF", reverse: true },
+  { text: "I value fairness and rules over personal relationships.", dimension: "TF", reverse: false },
+  { text: "I often prioritize harmony and compassion over being strictly correct.", dimension: "TF", reverse: true },
+  { text: "I enjoy debating ideas even if it might upset someone.", dimension: "TF", reverse: false },
+
+  // J/P
+  { text: "I prefer to have a detailed plan before starting a project.", dimension: "JP", reverse: false },
+  { text: "I am comfortable leaving things open-ended and going with the flow.", dimension: "JP", reverse: true },
+  { text: "I stick to deadlines and schedules consistently.", dimension: "JP", reverse: false },
+  { text: "I enjoy being spontaneous rather than following a strict plan.", dimension: "JP", reverse: true },
+  { text: "I like finishing tasks ahead of time rather than waiting until the last minute.", dimension: "JP", reverse: false }
+];
+
+const choices = [
+  "Strongly Disagree",
+  "Disagree",
+  "Slightly Disagree",
+  "Neutral",
+  "Slightly Agree",
+  "Agree",
+  "Strongly Agree"
+];
+
+const form = document.getElementById("mbtiForm");
+
+// Render questions
+questions.forEach((q, idx) => {
+  const div = document.createElement("div");
+  div.className = "question";
+  const p = document.createElement("p");
+  p.textContent = `${idx+1}. ${q.text}`;
+  div.appendChild(p);
+
+  choices.forEach(choice => {
+    const label = document.createElement("label");
+    const input = document.createElement("input");
+    input.type = "radio";
+    input.name = `q${idx+1}`;
+    input.dataset.value = scoring[choice];
+    label.appendChild(input);
+    label.appendChild(document.createTextNode(choice));
+    div.appendChild(label);
+  });
+  form.appendChild(div);
+});
+
+// Calculate result
+function getResult() {
+  const scores = {E:0,I:0,S:0,N:0,T:0,F:0,J:0,P:0};
+  for(let i=0;i<questions.length;i++){
+    const radios = document.getElementsByName(`q${i+1}`);
+    let selected = null;
+    for(const r of radios) if(r.checked) selected = Number(r.dataset.value);
+    if(selected===null){ alert("Please answer all questions!"); return; }
+
+    if(questions[i].reverse) selected*=-1;
+
+    switch(questions[i].dimension){
+      case "EI": selected>=0 ? scores.E+=selected : scores.I+=-selected; break;
+      case "SN": selected>=0 ? scores.S+=selected : scores.N+=-selected; break;
+      case "TF": selected>=0 ? scores.T+=selected : scores.F+=-selected; break;
+      case "JP": selected>=0 ? scores.J+=selected : scores.P+=-selected; break;
+    }
+  }
+
+  const type = 
+    (scores.E>=scores.I?"E":"I")+
+    (scores.S>=scores.N?"S":"N")+
+    (scores.T>=scores.F?"T":"F")+
+    (scores.J>=scores.P?"J":"P");
+
+  localStorage.setItem("mbtiResult", type);
+  window.location.href = "dashboard.html";
+}
+</script>
+</body>
+</html>
