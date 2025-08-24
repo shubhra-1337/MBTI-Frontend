@@ -31,12 +31,7 @@
       from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
     }
-    h2 {
-      text-align: center;
-      font-size: 2.4rem;
-      margin-bottom: 30px;
-      color: #ffffff;
-    }
+    h2 { text-align: center; font-size: 2.4rem; margin-bottom: 30px; color: #fff; }
     .question { margin-bottom: 25px; }
     .question p { font-weight: 600; font-size: 1.1rem; margin-bottom: 10px; }
     label {
@@ -48,14 +43,10 @@
       cursor: pointer;
       transition: 0.3s;
     }
-    label:hover {
-      background-color: rgba(255, 255, 255, 0.35);
-    }
-    input[type="radio"] {
-      margin-right: 10px;
-    }
+    label:hover { background-color: rgba(255, 255, 255, 0.35); }
+    input[type="radio"] { margin-right: 10px; }
     button {
-      background-color: #ffffff;
+      background-color: #fff;
       color: #7c4dff;
       padding: 14px 28px;
       border: none;
@@ -67,10 +58,7 @@
       transition: all 0.3s ease;
       box-shadow: 0 5px 15px rgba(124, 77, 255, 0.3);
     }
-    button:hover {
-      background-color: #e8e0ff;
-      transform: scale(1.05);
-    }
+    button:hover { background-color: #e8e0ff; transform: scale(1.05); }
     @media (max-width: 600px) {
       .container { padding: 30px 20px; }
       h2 { font-size: 2rem; }
@@ -79,110 +67,116 @@
 </head>
 <body>
 
-  <div class="container">
-    <h2>✨ Discover Your MBTI Type</h2>
-    <form id="mbtiForm"></form>
-    <button onclick="getResult()">Reveal My Type</button>
-  </div>
+<div class="container">
+  <h2>✨ Discover Your MBTI Type</h2>
+  <form id="mbtiForm"></form>
+  <button type="button" onclick="getResult()">Reveal My Type</button>
+</div>
 
-  <script>
-    const questions = [
-      "Describe how you feel after spending hours at a loud, crowded event.",
-      "What kind of conversations energize you the most — one-on-one or group-based?",
-      "When something exciting happens, who’s the first to know, and how fast do you share it?",
-      "Do you ever feel drained after too much alone time — or is that your sweet spot?",
-      "How do you behave in a room full of strangers when no one’s talking yet?",
-      "When learning something new, what helps more — hands-on practice or conceptual frameworks?",
-      "Do you notice small details in your surroundings, or are you more drawn to patterns and meanings?",
-      "When someone tells a story, what stands out more to you: the facts or the emotions behind it?",
-      "How do you prefer to plan a trip — itinerary and bookings or ideas and vibes?",
-      "Do you trust what’s proven and familiar, or do you often explore imaginative what-ifs?",
-      "When someone disagrees with you, do you defend your point with facts or seek to understand their feelings?",
-      "Do you believe being fair means treating everyone the same or considering each person’s unique situation?",
-      "If a friend breaks a rule for a good reason, do you side with the rules or their intentions?",
-      "When solving a problem, do you focus on the most efficient solution or the one that affects people least?",
-      "In your mind, is 'being right' the same as 'doing right'?",
-      "How do you typically approach a big task — do you plan step by step or take it as it comes?",
-      "What’s your relationship with deadlines — early bird or last-minute pressure cooker?",
-      "How do you feel when someone cancels plans last minute — relieved, annoyed, or indifferent?",
-      "Do you write to-do lists for daily life or rely on spontaneity?",
-      "When you travel, do you enjoy sticking to a plan or discovering things along the way?"
-    ];
+<script>
+const scoring = {
+  "Strongly Disagree": -3,
+  "Disagree": -2,
+  "Slightly Disagree": -1,
+  "Neutral": 0,
+  "Slightly Agree": 1,
+  "Agree": 2,
+  "Strongly Agree": 3
+};
 
-    const choices = [
-      "Strongly Disagree",
-      "Disagree",
-      "Slightly Disagree",
-      "Neutral",
-      "Slightly Agree",
-      "Agree",
-      "Strongly Agree"
-    ];
+// 5 questions per MBTI dimension with some reversed
+const questions = [
+  // E/I
+  { text: "I feel energized after spending time with a group of people.", dimension: "EI", reverse: false },
+  { text: "I prefer thinking things through alone before sharing my ideas.", dimension: "EI", reverse: false },
+  { text: "I enjoy starting conversations with strangers.", dimension: "EI", reverse: false },
+  { text: "I feel drained after social gatherings, even if fun.", dimension: "EI", reverse: true },
+  { text: "I often speak my thoughts out loud to process them.", dimension: "EI", reverse: false },
 
-    const traits = [
-      ["E", "I"], ["E", "I"], ["E", "I"], ["E", "I"], ["E", "I"],
-      ["S", "N"], ["S", "N"], ["S", "N"], ["S", "N"], ["S", "N"],
-      ["T", "F"], ["T", "F"], ["T", "F"], ["T", "F"], ["T", "F"],
-      ["J", "P"], ["J", "P"], ["J", "P"], ["J", "P"], ["J", "P"]
-    ];
+  // S/N
+  { text: "I focus on facts and details rather than possibilities.", dimension: "SN", reverse: false },
+  { text: "I enjoy imagining future possibilities more than analyzing the present.", dimension: "SN", reverse: false }  ,
+  { text: "I notice small changes and details in my environment easily.", dimension: "SN", reverse: false },
+  { text: "I often look for patterns or meanings rather than just obvious facts.", dimension: "SN", reverse: false },
+  { text: "I trust practical experience over abstract theories.", dimension: "SN", reverse: false },
 
-    const form = document.getElementById("mbtiForm");
+  // T/F
+  { text: "I make decisions based on logic rather than personal feelings.", dimension: "TF", reverse: false },
+  { text: "I consider others’ emotions when making decisions.", dimension: "TF", reverse: true },
+  { text: "I value fairness and rules over personal relationships.", dimension: "TF", reverse: false },
+  { text: "I often prioritize harmony and compassion over being strictly correct.", dimension: "TF", reverse: true },
+  { text: "I enjoy debating ideas even if it might upset someone.", dimension: "TF", reverse: false },
 
-    questions.forEach((q, index) => {
-      const div = document.createElement("div");
-      div.className = "question";
-      const p = document.createElement("p");
-      p.textContent = `${index + 1}. ${q}`;
-      div.appendChild(p);
-      choices.forEach((choice, i) => {
-        const label = document.createElement("label");
-        const input = document.createElement("input");
-        input.type = "radio";
-        input.name = `q${index + 1}`;
-        if (i < 3) input.value = traits[index][1]; // Disagree group → second trait
-        else if (i > 3) input.value = traits[index][0]; // Agree group → first trait
-        else input.value = ""; // Neutral = no effect
-        label.appendChild(input);
-        label.appendChild(document.createTextNode(choice));
-        div.appendChild(label);
-      });
-      form.appendChild(div);
-    });
+  // J/P
+  { text: "I prefer to have a detailed plan before starting a project.", dimension: "JP", reverse: false },
+  { text: "I am comfortable leaving things open-ended and going with the flow.", dimension: "JP", reverse: true },
+  { text: "I stick to deadlines and schedules consistently.", dimension: "JP", reverse: false },
+  { text: "I enjoy being spontaneous rather than following a strict plan.", dimension: "JP", reverse: true },
+  { text: "I like finishing tasks ahead of time rather than waiting until the last minute.", dimension: "JP", reverse: false }
+];
 
-    function getResult() {
-      const form = document.forms['mbtiForm'];
-      const counts = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
+const choices = [
+  "Strongly Disagree",
+  "Disagree",
+  "Slightly Disagree",
+  "Neutral",
+  "Slightly Agree",
+  "Agree",
+  "Strongly Agree"
+];
 
-      for (let i = 1; i <= 20; i++) {
-        const radios = form[`q${i}`];
-        let selected = null;
+const form = document.getElementById("mbtiForm");
 
-        for (let radio of radios) {
-          if (radio.checked) {
-            selected = radio.value;
-            break;
-          }
-        }
+// Render questions
+questions.forEach((q, idx) => {
+  const div = document.createElement("div");
+  div.className = "question";
+  const p = document.createElement("p");
+  p.textContent = `${idx+1}. ${q.text}`;
+  div.appendChild(p);
 
-        if (selected === null) {
-          alert("Please answer all 20 questions to get your type!");
-          return;
-        }
+  choices.forEach(choice => {
+    const label = document.createElement("label");
+    const input = document.createElement("input");
+    input.type = "radio";
+    input.name = `q${idx+1}`;
+    input.dataset.value = scoring[choice];
+    label.appendChild(input);
+    label.appendChild(document.createTextNode(choice));
+    div.appendChild(label);
+  });
+  form.appendChild(div);
+});
 
-        if (selected) {
-          counts[selected]++;
-        }
-      }
+// Calculate result
+function getResult() {
+  const scores = {E:0,I:0,S:0,N:0,T:0,F:0,J:0,P:0};
+  for(let i=0;i<questions.length;i++){
+    const radios = document.getElementsByName(`q${i+1}`);
+    let selected = null;
+    for(const r of radios) if(r.checked) selected = Number(r.dataset.value);
+    if(selected===null){ alert("Please answer all questions!"); return; }
 
-      const result =
-        (counts.E >= counts.I ? "E" : "I") +
-        (counts.S >= counts.N ? "S" : "N") +
-        (counts.T >= counts.F ? "T" : "F") +
-        (counts.J >= counts.P ? "J" : "P");
+    if(questions[i].reverse) selected*=-1;
 
-      localStorage.setItem("mbtiResult", result);
-      window.location.href = "dashboard.html";
+    switch(questions[i].dimension){
+      case "EI": selected>=0 ? scores.E+=selected : scores.I+=-selected; break;
+      case "SN": selected>=0 ? scores.S+=selected : scores.N+=-selected; break;
+      case "TF": selected>=0 ? scores.T+=selected : scores.F+=-selected; break;
+      case "JP": selected>=0 ? scores.J+=selected : scores.P+=-selected; break;
     }
-  </script>
+  }
+
+  const type = 
+    (scores.E>=scores.I?"E":"I")+
+    (scores.S>=scores.N?"S":"N")+
+    (scores.T>=scores.F?"T":"F")+
+    (scores.J>=scores.P?"J":"P");
+
+  localStorage.setItem("mbtiResult", type);
+  window.location.href = "dashboard.html";
+}
+</script>
 </body>
 </html>
+
