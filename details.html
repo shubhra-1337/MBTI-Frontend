@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Details</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(to right, #1d2671, #c33764);
+      color: #fff;
+      padding: 20px;
+      margin: 0;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: rgba(255,255,255,0.1);
+      padding: 30px;
+      border-radius: 20px;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    ul li {
+      margin-bottom: 10px;
+    }
+    .back-button {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 30px;
+      background: #fff;
+      color: #1d2671;
+      font-weight: bold;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 id="title"></h1>
+    <ul id="list"></ul>
+    <button class="back-button" onclick="history.back()">⬅ Back</button>
+  </div>
+
+  <script>
+    // Parse query params
+    const params = new URLSearchParams(window.location.search);
+    const type = params.get("type");
+    const category = params.get("category");
+
+    // Same data object you have in recommendation.html
+    const data = {
+      ISTJ: {
+        songs: ["Hall of Fame – The Script", "The Man – Aloe Blacc"],
+        books: ["The 7 Habits of Highly Effective People – Stephen R. Covey", "Quiet – Susan Cain"],
+        careers: ["Auditor", "Civil Engineer"]
+      },
+      ISFJ: {
+        songs: ["Home – Michael Bublé", "A Thousand Years – Christina Perri"],
+        books: ["Little Women – Louisa May Alcott", "The Book Thief – Markus Zusak"],
+        careers: ["Nurse", "Elementary School Teacher"]
+      },
+      INFJ: {
+        songs: ["Human – Christina Perri", "Demons – Imagine Dragons"],
+        books: ["The Alchemist – Paulo Coelho", "The Little Prince – Antoine de Saint-Exupéry"],
+        careers: ["Psychologist", "Author"]
+      },
+      INTJ: {
+        songs: ["Believer – Imagine Dragons", "Everybody Wants to Rule the World – Lorde"],
+        books: ["1984 – George Orwell", "Thinking, Fast and Slow – Daniel Kahneman"],
+        careers: ["Strategic Consultant", "Data Scientist"]
+      },
+      ISTP: {
+        songs: ["Radioactive – Imagine Dragons", "Centuries – Fall Out Boy"],
+        books: ["Into the Wild – Jon Krakauer", "Born to Run – Christopher McDougall"],
+        careers: ["Mechanic", "Software Developer"]
+      },
+      ISFP: {
+        songs: ["Lost Boy – Ruth B.", "Budapest – George Ezra"],
+        books: ["The Secret Life of Bees – Sue Monk Kidd", "The Perks of Being a Wallflower – Stephen Chbosky"],
+        careers: ["Graphic Designer", "Photographer"]
+      },
+      INFP: {
+        songs: ["All Too Well (10 Minute Version) – Taylor Swift", "Creep – Radiohead"],
+        books: ["Jane Eyre – Charlotte Brontë", "The Fault in Our Stars – John Green"],
+        careers: ["Writer", "Art Therapist"]
+      },
+      INTP: {
+        songs: ["Stressed Out – Twenty One Pilots", "Mad World – Gary Jules"],
+        books: ["Sapiens – Yuval Noah Harari", "Gödel, Escher, Bach – Douglas Hofstadter"],
+        careers: ["Systems Analyst", "Research Scientist"]
+      },
+      ESTP: {
+        songs: ["Can't Hold Us – Macklemore & Ryan Lewis", "Power – Kanye West"],
+        books: ["The Wolf of Wall Street – Jordan Belfort", "Steve Jobs – Walter Isaacson"],
+        careers: ["Sales Executive", "Stockbroker"]
+      },
+      ESFP: {
+        songs: ["Shake It Off – Taylor Swift", "Levitating – Dua Lipa"],
+        books: ["Eat, Pray, Love – Elizabeth Gilbert", "Daisy Jones & The Six – Taylor Jenkins Reid"],
+        careers: ["Actor", "Event Planner"]
+      },
+      ENFP: {
+        songs: ["Dog Days Are Over – Florence + The Machine", "Unwritten – Natasha Bedingfield"],
+        books: ["Big Magic – Elizabeth Gilbert", "Looking for Alaska – John Green"],
+        careers: ["Creative Director", "Motivational Speaker"]
+      },
+      ENTP: {
+        songs: ["Stronger – Kanye West", "Feel It Still – Portugal. The Man"],
+        books: ["Freakonomics – Steven D. Levitt & Stephen J. Dubner", "The Tipping Point – Malcolm Gladwell"],
+        careers: ["Entrepreneur", "Marketing Strategist"]
+      },
+      ESTJ: {
+        songs: ["Eye of the Tiger – Survivor", "My Way – Frank Sinatra"],
+        books: ["Good to Great – Jim Collins", "The Art of War – Sun Tzu"],
+        careers: ["Project Manager", "Judge"]
+      },
+      ESFJ: {
+        songs: ["Count on Me – Bruno Mars", "Perfect – Ed Sheeran"],
+        books: ["Pride and Prejudice – Jane Austen", "Wonder – R.J. Palacio"],
+        careers: ["Social Worker", "HR Manager"]
+      },
+      ENFJ: {
+        songs: ["Brave – Sara Bareilles", "Fight Song – Rachel Platten"],
+        books: ["To Kill a Mockingbird – Harper Lee", "Becoming – Michelle Obama"],
+        careers: ["Teacher", "Public Relations Specialist"]
+      },
+      ENTJ: {
+        songs: ["Stronger (What Doesn’t Kill You) – Kelly Clarkson", "Whatever It Takes – Imagine Dragons"],
+        books: ["Atlas Shrugged – Ayn Rand", "Leaders Eat Last – Simon Sinek"],
+        careers: ["CEO", "Lawyer"]
+      }
+   
+      };
+      // ... all MBTI types
+    
+
+    const listContainer = document.getElementById("list");
+    const title = document.getElementById("title");
+
+    if (data[type] && data[type][category]) {
+      title.textContent = `${category.charAt(0).toUpperCase() + category.slice(1)} for ${type}`;
+      listContainer.innerHTML = data[type][category]
+        .map(item => `<li>${item}</li>`)
+        .join("");
+    } else {
+      title.textContent = "No data found";
+    }
+  </script>
+</body>
+</html>
