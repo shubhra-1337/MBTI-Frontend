@@ -83,7 +83,7 @@
       container.innerHTML = `<div class="loading">🔄 Loading your recommendations...</div>`;
 
       // Fetch from backend (fixed URL)
-      fetch(`h https://mbti-backend-zgc6.onrender.com${result}`)
+      fetch(`https://mbti-backend-zgc6.onrender.com${result}`)
         .then(response => {
           if (!response.ok) {
             throw new Error("Failed to fetch from server");
@@ -147,5 +147,6 @@
   </script>
 </body>
 </html>
+
 
 
