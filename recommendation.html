@@ -73,7 +73,7 @@
   </div>
 
   <script>
-    const result = localStorage.getItem("mbtiResult"); // e.g. "INFJ"
+    const result = localStorage.getItem("mbtiResult"); 
     const container = document.getElementById("recommendationContent");
 
     if (!result) {
@@ -82,8 +82,8 @@
       // Show loading message
       container.innerHTML = `<div class="loading">🔄 Loading your recommendations...</div>`;
 
-      // Fetch from backend (✅ fixed URL)
-      fetch(` https://mbti-backend-7.onrender.com${result}`)
+      // Fetch from backend (fixed URL)
+      fetch(`https://mbti-backend-7.onrender.com/mbti/${result}`)
         .then(response => {
           if (!response.ok) {
             throw new Error("Failed to fetch from server");
@@ -147,7 +147,4 @@
   </script>
 </body>
 </html>
-
-
-
 
