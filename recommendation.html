@@ -76,14 +76,20 @@
     const result = localStorage.getItem("mbtiResult"); 
     const container = document.getElementById("recommendationContent");
 
+    // ✅ Pick correct backend (local vs deployed)
+    const API_BASE =
+      window.location.hostname === "localhost"
+        ? "http://localhost:5000"
+        : "https://mbti-backend-7.onrender.com";
+
     if (!result) {
       container.innerHTML = `<p>No MBTI result found. Please take the test first.</p>`;
     } else {
       // Show loading message
       container.innerHTML = `<div class="loading">🔄 Loading your recommendations...</div>`;
 
-      // Fetch from backend (fixed URL)
-      fetch(`https://mbti-backend-7.onrender.com${result}`)
+      // ✅ Correct fetch URL
+      fetch(`${API_BASE}/mbti/${result}`)
         .then(response => {
           if (!response.ok) {
             throw new Error("Failed to fetch from server");
@@ -147,6 +153,8 @@
   </script>
 </body>
 </html>
+
+
 
 
 
